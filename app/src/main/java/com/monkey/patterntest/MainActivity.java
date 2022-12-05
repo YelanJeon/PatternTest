@@ -21,12 +21,12 @@ public class MainActivity extends AppCompatActivity implements Contract.View {
         textView = findViewById(R.id.textview);
         button = findViewById(R.id.button);
 
-        presenter = new Presenter(this, new DogFacts());
+        presenter = new Presenter(this);
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                presenter.onButtonClick();
+                presenter.getFact();
             }
         });
     }
