@@ -7,13 +7,11 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Contract.View {
     TextView textView;
     Button button;
+
+    Contract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,21 +21,18 @@ public class MainActivity extends AppCompatActivity {
         textView = findViewById(R.id.textview);
         button = findViewById(R.id.button);
 
+        presenter = new Presenter(this, new DogFacts());
+
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MyRetrofit.getInstance().create(MyRequest.class).getFact().enqueue(new Callback<DogFacts>() {
-                    @Override
-                    public void onResponse(Call<DogFacts> call, Response<DogFacts> response) {
-                        textView.setText(response.body().getFactMessage());
-                    }
-
-                    @Override
-                    public void onFailure(Call<DogFacts> call, Throwable t) {
-                        textView.setText("failure");
-                    }
-                });
+                presenter.onButtonClick();
             }
         });
+    }
+
+    @Override
+    public void showResult(String result) {
+        textView.setText(result);
     }
 }
