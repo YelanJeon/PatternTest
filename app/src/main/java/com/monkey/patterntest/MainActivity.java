@@ -2,42 +2,29 @@ package com.monkey.patterntest;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+import com.monkey.patterntest.databinding.ActivityMainBinding;
+
 
 public class MainActivity extends AppCompatActivity {
-    TextView textView;
-    Button button;
+
+    ActivityMainBinding binding;
+    public MyViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        viewModel = new ViewModelProvider(this).get(MyViewModel.class);
 
-        textView = findViewById(R.id.textview);
-        button = findViewById(R.id.button);
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setViewModel(viewModel);
+        binding.setLifecycleOwner(this);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                MyRetrofit.getInstance().create(MyRequest.class).getFact().enqueue(new Callback<DogFacts>() {
-                    @Override
-                    public void onResponse(Call<DogFacts> call, Response<DogFacts> response) {
-                        textView.setText(response.body().getFactMessage());
-                    }
-
-                    @Override
-                    public void onFailure(Call<DogFacts> call, Throwable t) {
-                        textView.setText("failure");
-                    }
-                });
-            }
-        });
     }
 }
